@@ -43,11 +43,13 @@ object covid19PredictionApp {
     val probabilityUnderGender = udf((x: Vector) => x(0)*100)
     val probabilityUnderAge = udf((x: Vector) => x(1)*100)
     val probabilityUnderState = udf((x: Vector) => x(2)*100)
+    val stateCodeToName = udf((x: String) => stateCode.stateMap.getOrElse(x, "NA"))
 
 
     val probabilityDF = predictionDF.withColumn("p_sex", probabilityUnderGender(col("probability")))
       .withColumn("p_age", probabilityUnderAge(col("probability")))
       .withColumn("p_state", probabilityUnderState(col("probability")))
+      .withColumn("state",stateCodeToName(col("state")) )
       .select(
       col("sex"),
       col("age"),
